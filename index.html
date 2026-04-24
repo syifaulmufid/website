@@ -5,13 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Interactive Linear Regression</title>
 
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- MathJax for LaTeX rendering -->
   <script>
-  window.MathJax = {
-    tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
-  };
-</script>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
   <style>
     body {
@@ -60,11 +69,34 @@
   <div class="box">
     <h2>Formula</h2>
     <p>
-      The linear regression model is
-      \[
-      y = a + bx
-      \]
-      where \(b\) is the slope and \(a\) is the intercept.
+      The linear regression model is:
+    </p>
+    <p>
+      $$ y = a + bx $$
+    </p>
+    <p>
+      where:
+    </p>
+    <ul>
+      <li>$a$ is the intercept</li>
+      <li>$b$ is the slope</li>
+    </ul>
+    <p>
+      The slope can be computed by
+    </p>
+    <p>
+      $$
+      b = \frac{n\sum xy - (\sum x)(\sum y)}
+      {n\sum x^2 - (\sum x)^2}
+      $$
+    </p>
+    <p>
+      and the intercept by
+    </p>
+    <p>
+      $$
+      a = \frac{\sum y - b\sum x}{n}.
+      $$
     </p>
   </div>
 
@@ -144,7 +176,12 @@
       intercept = (sumY - slope * sumX) / n;
 
       document.getElementById("equation").innerHTML =
-        `y = ${intercept.toFixed(4)} + ${slope.toFixed(4)}x`;
+        `$$ y = ${intercept.toFixed(4)} + ${slope.toFixed(4)}x $$`;
+
+      // Re-render MathJax after updating content
+      if (window.MathJax) {
+        MathJax.typesetPromise([document.getElementById("equation")]);
+      }
 
       drawChart(data);
     }
@@ -154,7 +191,12 @@
       const y = intercept + slope * x;
 
       document.getElementById("prediction").innerHTML =
-        `For x = ${x}, predicted y = ${y.toFixed(4)}`;
+        `For $x = ${x}$, the predicted value is $$ y = ${y.toFixed(4)} $$`;
+
+      // Re-render MathJax after updating content
+      if (window.MathJax) {
+        MathJax.typesetPromise([document.getElementById("prediction")]);
+      }
     }
 
     function drawChart(data) {
